@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -12,6 +13,7 @@ var port = 8080
 type application struct {
 	DSN    string
 	Domain string
+	DB     *sql.DB
 }
 
 func main() {
@@ -24,11 +26,17 @@ func main() {
 	flag.Parse()
 
 	// connect to db
+	dbConn, err := app.connectToDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app.DB = dbConn
 
 	// start api
 	log.Println("starting web server at port", port)
 
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), app.routes())
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), app.routes())
 	if err != nil {
 		log.Fatal(err)
 	}
