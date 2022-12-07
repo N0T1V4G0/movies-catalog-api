@@ -1,7 +1,8 @@
 package main
 
 import (
-	"database/sql"
+	"backend/internal/repository"
+	"backend/internal/repository/dbrepo"
 	"flag"
 	"fmt"
 	"log"
@@ -13,7 +14,7 @@ var port = 8080
 type application struct {
 	DSN    string
 	Domain string
-	DB     *sql.DB
+	DB     repository.DatabaseRepo
 }
 
 func main() {
@@ -31,7 +32,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app.DB = dbConn
+	var dbRepoImpl dbrepo.PostgresDBRepo
+
+	dbRepoImpl.DB = dbConn
+	app.DB = &dbRepoImpl
+	defer app.DB.Connection().Close()
 
 	// start api
 	log.Println("starting web server at port", port)
