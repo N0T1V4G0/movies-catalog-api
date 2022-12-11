@@ -41,7 +41,7 @@ func (r *PostgresDBRepo) AllMovies() ([]*models.Movie, error) {
 	var movies []*models.Movie
 
 	for rows.Next() {
-		var movie *models.Movie
+		var movie models.Movie
 		err := rows.Scan(
 			&movie.Id,
 			&movie.Title,
@@ -57,7 +57,7 @@ func (r *PostgresDBRepo) AllMovies() ([]*models.Movie, error) {
 			return nil, err
 		}
 
-		movies = append(movies, movie)
+		movies = append(movies, &movie)
 	}
 
 	return movies, nil
