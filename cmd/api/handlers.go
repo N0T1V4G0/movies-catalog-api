@@ -8,7 +8,7 @@ import (
 func (app *application) AllMovies(w http.ResponseWriter, r *http.Request) {
 	movies, err := app.DB.AllMovies()
 	if err != nil {
-		fmt.Println(err)
+		app.errorJSON(w, err)
 		return
 	}
 
